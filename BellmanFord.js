@@ -44,16 +44,26 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
 
 /**
  * Generates Battlecode Bellman-Ford algorithm in Java.
- *
- * @param {Location} loc origin
- * @param {*} range in r^2 to consider (likely vision range)
  */
-function generateBMF(loc, range) {
+function generateBMF() {
   // Generate all tiles we need to consider (in order).
   let offsets;
 
   // Generate Javadoc
-  // TODO
+  WL(
+    "/**",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "* ",
+    "*/"
+  );
+  WL();
 
   // Generate function signature
 
@@ -63,3 +73,5 @@ function generateBMF(loc, range) {
   // Assign variables with ingame values.
   WL("Assigning variables with values from the game world.");
 }
+
+generateBMF();
