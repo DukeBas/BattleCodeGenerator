@@ -6,10 +6,13 @@
 const codeBlock = document.getElementById("code-block");
 
 /**
- * Write line to output code block.
+ * Write line(s) to output code block.
+ * Use comma's to write multiple lines.
  *
- * @param {String} toWrite
+ * @param {String} toWrite any number of lines to write
  */
-function WL(toWrite) {
-  codeBlock.innerHTML += toWrite + "<br>";
+function WL(...toWrite) {
+  toWrite.forEach(element => {
+    codeBlock.innerHTML += element + "<br>";
+  });
 }
