@@ -61,11 +61,12 @@ function generateBMF() {
     "* @returns the direction to go in",
     "*/"
   );
-  
+
   // Generate function signature
   WL(
     "public Direction getDirectionTo(RobotController rc, MapLocation target){ "
   );
+  increaseIndentation();
   WL();
 
   // Generate variable declarations.
@@ -75,6 +76,7 @@ function generateBMF() {
   WL("Assigning variables with values from the game world.");
 
   // Close the function
+  decreaseIndentation();
   WL("}");
 }
 
