@@ -61,6 +61,10 @@ function generateBMF(range) {
      * cost (what added that location would add to total cost, likely something like passability/rubble)
      * Direction (to previous tile in path)
      */
+    WL("MapLocation " + offset.toVariableName("loc_"));
+    WL("int " + offset.toVariableName("pathLength_"));
+    WL("int " + offset.toVariableName("cost_"));
+    WL("Direction " + offset.toVariableName("bestDir_"));
 
     WL();
   });

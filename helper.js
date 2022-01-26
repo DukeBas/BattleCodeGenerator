@@ -29,6 +29,16 @@ class Location {
   toString() {
     return "(" + this.x + "," + this.y + ")";
   }
+
+  /**
+   * Used to generate a variable name based on this location, with possible pre and postfix.
+   * 
+   * @param {String} pre prefix, before the variable body
+   * @param {String} post postfix, after the variable body
+   */
+  toVariableName(pre = "", post = "") {
+    return pre + this.x + "_" + this.y + post;
+  }
 }
 
 /**
