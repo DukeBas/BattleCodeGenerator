@@ -49,8 +49,6 @@ function getOffsetsInRange(range) {
   return out;
 }
 
-wl(getOffsetsInRange(4));
-
 /**
  * Gets all tiles within range of a tile (measured in r^2).
  *
@@ -58,5 +56,13 @@ wl(getOffsetsInRange(4));
  * @param {number} range in r^2
  */
 function getLocationsInRange(loc, range) {
-  // todo
+  let out = getOffsetsInRange(range);
+  out.map((location) => {
+    // add center tile to the location to receive final location
+    location.x += loc.x;
+    location.y += loc.y;
+  })
+  return out;
 }
+
+wl(getLocationsInRange(new Location(3, 3), 4));
