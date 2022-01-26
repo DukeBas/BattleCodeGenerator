@@ -28,12 +28,15 @@ function WL(...toWrite) {
   }
 }
 
+/**
+ * Increases current indentation level.
+ */
 function increaseIndentation() {
   indendationlevel++;
 }
 
 /**
- * Decreases current indendation level (if possible)
+ * Decreases current indentation level (if possible).
  */
 function decreaseIndentation() {
   if (indendationlevel > 0) {
