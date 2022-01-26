@@ -43,3 +43,19 @@ function decreaseIndentation() {
     indendationlevel--;
   }
 }
+
+/**
+ * Writes an efficient loop for a number of iterations.
+ * Example: WLoop(10, () => {WL("//test")});
+ *
+ * @param {number} iterations number of iterations in the loop
+ * @param {function} inside of loop (callback function to execute)
+ * @param {String} it_name variable name of iterator (only really matters in nested loops)
+ */
+function WLoop(iterations, inside, it_name = "i") {
+  WL("for (int " + it_name + " = " + iterations + "; --i > 0; ){");
+  increaseIndentation();
+  inside();
+  decreaseIndentation();
+  WL("}");
+}

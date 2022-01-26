@@ -80,4 +80,9 @@ function generateBMF() {
   WL("}");
 }
 
+// call main function
 generateBMF();
+
+WLoop(10, () => {
+  WL("//test");
+} )
