@@ -52,26 +52,30 @@ function generateBMF() {
   // Generate Javadoc
   WL(
     "/**",
+    "* Uses own location, target and runs a simplified Bellman-Ford algorithm ",
+    "* to get the best direction to walk to get to the target.",
     "* ",
-    "* ",
-    "* ",
-    "* ",
-    "* ",
-    "* ",
-    "* ",
-    "* ",
-    "* ",
+    "* @param rc RobotController of the robot calling this function,",
+    "*           this robot's location will be used as origin.",
+    "* @param target location on the map to pathfind towards.",
+    "* @returns the direction to go in",
     "*/"
   );
-  WL();
-
+  
   // Generate function signature
+  WL(
+    "public Direction getDirectionTo(RobotController rc, MapLocation target){ "
+  );
+  WL();
 
   // Generate variable declarations.
   WL("Variable declarations. Names based on off-set from origin.");
 
   // Assign variables with ingame values.
   WL("Assigning variables with values from the game world.");
+
+  // Close the function
+  WL("}");
 }
 
 generateBMF();
