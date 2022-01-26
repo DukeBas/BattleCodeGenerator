@@ -10,6 +10,6 @@ const codeBlock = document.getElementById("code-block");
  *
  * @param {String} toWrite
  */
-function wl(toWrite) {
+function WL(toWrite) {
   codeBlock.innerHTML += toWrite + "<br>";
 }

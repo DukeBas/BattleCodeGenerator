@@ -37,7 +37,6 @@ function getOffsetsInRange(range) {
       // check all x offsets
       for (let y = -r; y <= r; y++) {
         // check all y offsets
-        console.log(x,y)
         if (x * x + y * y == i) {
           // if this is the range we're looking for, add to output
           out.push(new Location(x, y));
@@ -49,20 +48,18 @@ function getOffsetsInRange(range) {
   return out;
 }
 
-/**
- * Gets all tiles within range of a tile (measured in r^2).
- *
- * @param {Location} loc location to take as center
- * @param {number} range in r^2
- */
-function getLocationsInRange(loc, range) {
-  let out = getOffsetsInRange(range);
-  out.map((location) => {
-    // add center tile to the location to receive final location
-    location.x += loc.x;
-    location.y += loc.y;
-  })
-  return out;
-}
-
-wl(getLocationsInRange(new Location(3, 3), 4));
+// /**
+//  * Gets all tiles within range of a tile (measured in r^2).
+//  *
+//  * @param {Location} loc location to take as center
+//  * @param {number} range in r^2
+//  */
+// function getLocationsInRange(loc, range) {
+//   let out = getOffsetsInRange(range);
+//   out.map((location) => {
+//     // add center tile to the location to receive final location
+//     location.x += loc.x;
+//     location.y += loc.y;
+//   })
+//   return out;
+// }
