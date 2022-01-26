@@ -44,36 +44,51 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
 
 /**
  * Generates Battlecode Bellman-Ford algorithm in Java.
+ *
+ * @param {number} range in r^2 of unit to generate for.
  */
-function generateBMF() {
+function generateBMF(range) {
   // Generate all tiles we need to consider (in order).
-  let offsets;
+  let offsets = getOffsetsInRange(range);
+
+  // Generate variable declarations.
+  WComment("Variable declarations. Names based on off-set from origin.");
+  offsets.forEach((offset) => {
+    WL("// Variables for " + offset);
+    /*
+     * for each location (graph vertex) we keep MapLocation,
+     * path-length (shortest currently known length of path from origin to location),
+     * cost (what added that location would add to total cost, likely something like passability/rubble)
+     * Direction (to previous tile in path)
+     */
+
+    WL();
+  });
 
   // Generate Javadoc
-  WL(
-    "/**",
-    "* Uses own location, target and runs a simplified Bellman-Ford algorithm ",
-    "* to get the best direction to walk to get to the target.",
-    "* ",
-    "* @param rc RobotController of the robot calling this function,",
-    "*           this robot's location will be used as origin.",
-    "* @param target location on the map to pathfind towards.",
-    "* @returns the direction to go in",
-    "*/"
+  WJavadoc(
+    "Uses own location, target and runs a simplified Bellman-Ford algorithm ",
+    "to get the best direction to walk to get to the target.",
+    "",
+    "@param rc RobotController of the robot calling this function,",
+    "          this robot's location will be used as origin.",
+    "@param target location on the map to pathfind towards.",
+    "@returns the direction to go in"
   );
 
   // Generate function signature
   WL(
-    "public Direction getDirectionTo(RobotController rc, MapLocation target){ "
+    "public Direction getDirectionTo(RobotController rc, MapLocation target) { "
   );
   increaseIndentation();
   WL();
 
-  // Generate variable declarations.
-  WL("Variable declarations. Names based on off-set from origin.");
-
   // Assign variables with ingame values.
-  WL("Assigning variables with values from the game world.");
+  WL("// Assigning variables with values from the game world.");
+
+  // First iteration (necessary, different in that it requests game values)
+
+  // Further iterations
 
   // Close the function
   decreaseIndentation();
@@ -81,8 +96,8 @@ function generateBMF() {
 }
 
 // call main function
-generateBMF();
+generateBMF(34);
 
 WLoop(10, () => {
   WL("//test");
-} )
+});

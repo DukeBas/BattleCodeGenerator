@@ -53,9 +53,35 @@ function decreaseIndentation() {
  * @param {String} it_name variable name of iterator (only really matters in nested loops)
  */
 function WLoop(iterations, inside, it_name = "i") {
-  WL("for (int " + it_name + " = " + iterations + "; --i > 0; ){");
+  WL("for (int " + it_name + " = " + iterations + "; --i > 0; ) {");
   increaseIndentation();
   inside();
   decreaseIndentation();
   WL("}");
+}
+
+/**
+ * Generates Javadoc. Lines seperates with comma's in arguments.
+ * 
+ * @param  {...any} toWrite lines to write in the Javadoc
+ */
+function WJavadoc(...toWrite){
+  WL("/**");
+  toWrite.forEach((element) => {
+    codeBlock.innerHTML += "* " + element + "<br>";
+  });
+  WL("*/")
+}
+
+/**
+ * Generates a multiline comment. Lines seperates with comma's in arguments.
+ * 
+ * @param  {...any} toWrite lines to write in the comment
+ */
+ function WComment(...toWrite){
+  WL("/*");
+  toWrite.forEach((element) => {
+    codeBlock.innerHTML += "* " + element + "<br>";
+  });
+  WL("*/")
 }

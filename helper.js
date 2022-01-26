@@ -2,15 +2,28 @@
 // Assumes that the game is played on a grid. Uses Offsets from own position to indicate other position (relative instead of absolute positioning).
 
 /**
- * Record type to hold an x and y
+ * Record type to hold an x and y.
+ * Can also hold extra information about adjacent locations,
+ * the meaning of which is dependent on the context.
  */
 class Location {
+  // x and y coordinates
   x;
   y;
 
-  constructor(x, y) {
+  // cardinal directions, optional
+  n;
+  e;
+  s;
+  w;
+
+  constructor(x, y, north, east, south, west) {
     this.x = x;
     this.y = y;
+    this.n = north;
+    this.e = east;
+    this.s = south;
+    this.w = west;
   }
 
   toString() {
