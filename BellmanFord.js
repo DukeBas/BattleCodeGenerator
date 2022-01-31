@@ -74,7 +74,9 @@ function generateBMF(range) {
   increaseIndentation();
 
   // Generate variable declarations.
-  WComment("Variable declarations. Location names based on off-set from origin.");
+  WComment(
+    "Variable declarations. Location names based on off-set from origin."
+  );
   WL("static MapLocation ownLoc;", "");
   offsets.forEach((offset) => {
     WL("// Variables for " + offset);
@@ -114,12 +116,17 @@ function generateBMF(range) {
 
   // First iteration (necessary, different in that it requests game values)
   WComment("Initialise variables from game world for current situation");
-  WL("ownLoc = rc.getLocation();", "");
+  WL("ownLoc = rc.getLocation();");
+  offsets.forEach((offset) => {
+    let locVar = offset.toVariableName("loc_");
+    WL(locVar + " = TODO");
+  });
+  WL();
+
   offsets.forEach((offset) => {
     let locVar = offset.toVariableName("loc_");
 
-    WL("// Initialise for " + offset);
-    WL(locVar + " = TODO")
+    WL("// Check validity for " + offset);
     WL(
       "if (!rc.onTheMap(" +
         locVar +
@@ -134,7 +141,7 @@ function generateBMF(range) {
     WL("} else {");
     increaseIndentation();
     // body of else, done if location is invalid
-    WL(locVar + " = null;")
+    WL(locVar + " = null;");
     decreaseIndentation();
     WL("}", "");
   });
@@ -162,3 +169,104 @@ function generateBMF(range) {
 
 // call main function
 generateBMF(34);
+
+/**
+ * Returns the location of nearest location that already has been initalised.
+ * Assumes initialisation starts at origin and moves outwards by range.
+ *
+ * @param {location} loc
+ * @returns closest initaliased location
+ */
+function getNearestFilledLocation(loc) {
+  let ownRange = distanceToOrigin(loc.x, loc.y);
+
+  if (ownRange <= 2) {
+    // origin is in range, use that
+    return new Location(0, 0);
+  }
+
+  // Try all directions around us, use first one found that is valid.
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      let newX = loc.x + i;
+      let newY = loc.y + j;
+      if (distanceToOrigin(newX, newY) < ownRange) {
+        return new Location(newX, newY);
+      }
+    }
+  }
+}
+
+/**
+ * Returns distance squared to origin from some location with x and y coordinates.
+ *
+ * @param {number} x coordinate
+ * @param {number} y coordinate
+ * @returns number, distance in r^2 to origin
+ */
+function distanceToOrigin(x, y) {
+  return x * x + y * y;
+}
+
+/**
+ * Gets in game direction corresponding to a difference in x and y from own position (of max 1).
+ * 
+ * @param {number} dx -1,0,1
+ * @param {number} dy -1,0,1
+ * @returns ingame direction corresponding to the x and y
+ */
+function dxdyToDirection(dx, dy) {
+  let output = "Direction."
+  switch (dx) {
+    case -1:
+      switch (dy) {
+        case -1:
+          // Bottom left
+          output += "SOUTHWEST"
+          break;
+        case 0:
+          // Left
+          output += "WEST"
+          break;
+        case 1:
+          // Top left
+          output += "NORTHWEST"
+          break;
+      }
+      break;
+    case 0:
+      switch (dy) {
+        case -1:
+          // Below
+          output += "NORTH"
+          break;
+        case 0:
+          // Own location!!
+          output += "CENTER";
+          break;
+        case 1:
+          // Above
+          output += "SOUTH"
+          break;
+      }
+      break;
+    case 1:
+      switch (dy) {
+        case -1:
+          // Bottom right
+          output += "SOUTHEAST"
+          break;
+        case 0:
+          // Right
+          output += "EAST"
+          break;
+        case 1:
+          // Top right
+          output += "NORTHEAST"
+          break;
+      }
+      break;
+  }
+  
+  return output + ";";
+}
