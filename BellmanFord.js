@@ -119,29 +119,31 @@ function generateBMF(range) {
   WL("loc_0_0 = rc.getLocation();");
   offsets.forEach((offset) => {
     const locVar = offset.toVariableName("loc_");
-    const initalisedLocation =  getNearestFilledLocation(offset);
+    const initalisedLocation = getNearestFilledLocation(offset);
     const initdVar = initalisedLocation.toVariableName("loc_");
-    const dir =  dxdyToDirection(
-      offset.x - initalisedLocation.x, 
-      offset.y - initalisedLocation.y);
-    WL(locVar + " = " + initdVar + ".add("+ dir+ ");");
+    const dir = dxdyToDirection(
+      offset.x - initalisedLocation.x,
+      offset.y - initalisedLocation.y
+    );
+    WL(locVar + " = " + initdVar + ".add(" + dir + ");");
   });
   WL();
 
+  WComment("Check for each location if it is valid");
   offsets.forEach((offset) => {
     const locVar = offset.toVariableName("loc_");
 
     WL("// Check validity for " + offset);
     WL(
-      "if (!rc.onTheMap(" +
+      "if (rc.onTheMap(" +
         locVar +
-        ") || rc.isLocationOccupied(" +
+        ") && !rc.isLocationOccupied(" +
         locVar +
         ")) {"
     );
     increaseIndentation();
     // body of if, done if location is valid
-
+    WL(offset.toVariableName("cost_") + " = rc.senseRubble(" + locVar + ");");
     decreaseIndentation();
     WL("} else {");
     increaseIndentation();
