@@ -42,6 +42,10 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
   
 */
 
+//////TODO
+// Unreachable goal?
+// Goal outside of vision?
+
 /**
  * Generates Battlecode Bellman-Ford algorithm in Java.
  *
@@ -78,7 +82,14 @@ function generateBMF(range) {
   WComment(
     "Variable declarations. Location names based on off-set from origin."
   );
-  WL("static MapLocation loc_0_0; // own location", "");
+  WL(
+    "// Variables for (0,0), own location",
+    "static MapLocation loc_0_0;",
+    "static final int pathLength_0_0 = 0;",
+    "// we do not need a cost for starting location",
+    "static final Direction bestDir_0_0 = Direction.CENTER;",
+    ""
+  );
   offsets.forEach((offset) => {
     WL("// Variables for " + offset);
     /*
@@ -128,6 +139,8 @@ function generateBMF(range) {
       offset.y - initalisedLocation.y
     );
     WL(locVar + " = " + initdVar + ".add(" + dir + ");");
+    WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;")
+    WL(offset.toVariableName("bestDir_") + " = null;")
   });
   WL();
 
@@ -153,6 +166,34 @@ function generateBMF(range) {
     WL(locVar + " = null;");
     decreaseIndentation();
     WL("}", "");
+  });
+
+  WComment("Getting the shortest route to each location");
+
+  offsets.forEach((offset) => {
+    const locVar = offset.toVariableName("loc_");
+
+    WL("// ... " + offset);
+    WL("if (" + locVar + " != null) {");
+    increaseIndentation();
+    // We check every tile that is in our range
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        if (i != 0 || j != 0) {
+          // do not check for own location...
+          let modifiedX = offset.x + i;
+          let modifiedY = offset.y + j;
+          // Only check locations that we can actually see
+          if (distanceToOrigin(modifiedX, modifiedY) <= range) {
+            // Location we need to check!
+            // if their pathlength + our cost is lower than our path length, switch over
+          }
+        }
+      }
+    }
+
+    decreaseIndentation();
+    WL("}");
   });
 
   // Further iterations
