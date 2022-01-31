@@ -42,6 +42,9 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
   
 */
 
+// call main function
+generateBMF(20);
+
 //////TODO
 // Unreachable goal?
 // Goal outside of vision?
@@ -115,7 +118,7 @@ function generateBMF(range) {
     "@param rc         RobotController of the robot calling this function,",
     "                  this robot's location will be used as origin.",
     "@param target     location on the map to pathfind towards.",
-    "@param iterations number of additional iterations of Bellman-Ford done beyond initalisation",
+    "@param iterations number of  iterations of edge-relaxation are done (at least 1!)",
     "@returns the direction to go in"
   );
 
@@ -139,8 +142,8 @@ function generateBMF(range) {
       offset.y - initalisedLocation.y
     );
     WL(locVar + " = " + initdVar + ".add(" + dir + ");");
-    WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;")
-    WL(offset.toVariableName("bestDir_") + " = null;")
+    WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;");
+    WL(offset.toVariableName("bestDir_") + " = null;");
   });
   WL();
 
@@ -170,39 +173,34 @@ function generateBMF(range) {
 
   WComment("Getting the shortest route to each location");
 
-  offsets.forEach((offset) => {
-    const locVar = offset.toVariableName("loc_");
-
-    WL("// ... " + offset);
-    WL("if (" + locVar + " != null) {");
-    increaseIndentation();
-    // We check every tile that is in our range
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (i != 0 || j != 0) {
-          // do not check for own location...
-          let modifiedX = offset.x + i;
-          let modifiedY = offset.y + j;
-          // Only check locations that we can actually see
-          if (distanceToOrigin(modifiedX, modifiedY) <= range) {
-            // Location we need to check!
-            // if their pathlength + our cost is lower than our path length, switch over
-          }
-        }
-      }
-    }
-
-    decreaseIndentation();
-    WL("}");
-  });
-
-  // Further iterations
-  WComment(
-    "Possibly do more iterations to increase accuracy in difficult situations."
-  );
   WLoop("iterations", () => {
     // Loop body
     WL("//TODO");
+    offsets.forEach((offset) => {
+      const locVar = offset.toVariableName("loc_");
+
+      WL("// ... " + offset);
+      WL("if (" + locVar + " != null) {");
+      increaseIndentation();
+      // We check every tile that is in our range
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i != 0 || j != 0) {
+            // do not check for own location...
+            let modifiedX = offset.x + i;
+            let modifiedY = offset.y + j;
+            // Only check locations that we can actually see
+            if (distanceToOrigin(modifiedX, modifiedY) <= range) {
+              // Location we need to check!
+              // if their pathlength + our cost is lower than our path length, switch over
+            }
+          }
+        }
+      }
+
+      decreaseIndentation();
+      WL("}");
+    });
   });
 
   // Return best direction
@@ -216,9 +214,6 @@ function generateBMF(range) {
   decreaseIndentation();
   WL("}");
 }
-
-// call main function
-generateBMF(34);
 
 /**
  * Returns the location of nearest location that already has been initalised.
