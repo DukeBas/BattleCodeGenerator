@@ -51,11 +51,22 @@ function generateBMF(range) {
   // Generate all tiles we need to consider (in order).
   let offsets = getOffsetsInRange(range);
 
+  // Add package statement
+  WL("package Trainwreck.util;", "");
+
+  // Manage imports
+  WL(
+    "import battlecode.common.Direction;",
+    "import battlecode.common.MapLocation;",
+    "import battlecode.common.RobotController;",
+    ""
+  );
+
   // Class Javadoc
   WJavadoc(
     "Pathfinding class for a vision range of " + range + " r^2",
     "using a simplified Bellman-Ford."
-  )
+  );
 
   // Class declaration
   WL("public class BMF" + range + " {", "");
@@ -106,7 +117,6 @@ function generateBMF(range) {
 
   // Return best direction
   WL("return null;"); // TODO
-
 
   // Close the function
   decreaseIndentation();
