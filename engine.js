@@ -7,6 +7,7 @@ const codeBlock = document.getElementById("code-block");
 
 let indendationlevel = 0;
 const spacesPerIndentation = 4;
+let commentsEnabled = true;
 
 /**
  * Write line(s) to output code block. Use comma's to write multiple lines.
@@ -16,14 +17,19 @@ const spacesPerIndentation = 4;
  */
 function WL(...toWrite) {
   let indendation = "";
+
   if (indendationlevel > 0) {
     indendation = "&nbsp;".repeat(spacesPerIndentation);
   }
+
   if (toWrite.length == 0) {
     codeBlock.innerHTML += indendation + "<br>";
   } else {
     toWrite.forEach((element) => {
-      codeBlock.innerHTML += indendation + element + "<br>";
+      if (commentsEnabled || !element.includes("//")) {
+        // Print if it's not a comment while they are disabled.
+        codeBlock.innerHTML += indendation + element + "<br>";
+      }
     });
   }
 }
@@ -62,26 +68,37 @@ function WLoop(iterations, inside, it_name = "i") {
 
 /**
  * Generates Javadoc. Lines seperates with comma's in arguments.
- * 
+ *
  * @param  {...any} toWrite lines to write in the Javadoc
  */
-function WJavadoc(...toWrite){
+function WJavadoc(...toWrite) {
   WL("/**");
   toWrite.forEach((element) => {
     codeBlock.innerHTML += "* " + element + "<br>";
   });
-  WL("*/")
+  WL("*/");
 }
 
 /**
  * Generates a multiline comment. Lines seperates with comma's in arguments.
- * 
+ *
  * @param  {...any} toWrite lines to write in the comment
  */
- function WComment(...toWrite){
-  WL("/*");
-  toWrite.forEach((element) => {
-    codeBlock.innerHTML += "* " + element + "<br>";
-  });
-  WL("*/")
+function WComment(...toWrite) {
+  if (commentsEnabled) {
+    WL("/*");
+    toWrite.forEach((element) => {
+      codeBlock.innerHTML += "* " + element + "<br>";
+    });
+    WL("*/");
+  }
+}
+
+/**
+ * Sets the comments to on or off.
+ *
+ * @param {boolean} enabled
+ */
+function setComments(enabled) {
+  commentsEnabled = enabled;
 }
