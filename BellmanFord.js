@@ -59,6 +59,7 @@ function generateBMF(range) {
     "import battlecode.common.Direction;",
     "import battlecode.common.MapLocation;",
     "import battlecode.common.RobotController;",
+    "",
     ""
   );
 
@@ -73,7 +74,8 @@ function generateBMF(range) {
   increaseIndentation();
 
   // Generate variable declarations.
-  WComment("Variable declarations. Names based on off-set from origin.");
+  WComment("Variable declarations. Location names based on off-set from origin.");
+  WL("static MapLocation ownLoc;", "");
   offsets.forEach((offset) => {
     WL("// Variables for " + offset);
     /*
@@ -89,15 +91,16 @@ function generateBMF(range) {
 
     WL();
   });
+  WL();
 
   // Generate Javadoc
   WJavadoc(
     "Uses own location, target and runs a simplified Bellman-Ford algorithm ",
     "to get the best direction to walk to get to the target.",
     "",
-    "@param rc RobotController of the robot calling this function,",
-    "          this robot's location will be used as origin.",
-    "@param target location on the map to pathfind towards.",
+    "@param rc         RobotController of the robot calling this function,",
+    "                  this robot's location will be used as origin.",
+    "@param target     location on the map to pathfind towards.",
     "@param iterations number of additional iterations of Bellman-Ford done beyond initalisation",
     "@returns the direction to go in"
   );
@@ -109,17 +112,41 @@ function generateBMF(range) {
   increaseIndentation();
   WL();
 
-  // Assign variables with ingame values.
-  WL("// Assigning variables with values from the game world.");
-
   // First iteration (necessary, different in that it requests game values)
+  WComment("Initialise variables from game world for current situation");
+  WL("ownLoc = rc.getLocation();", "");
+  offsets.forEach((offset) => {
+    let locVar = offset.toVariableName("loc_");
+
+    WL("// Initialise for " + offset);
+    WL(locVar + " = TODO")
+    WL(
+      "if (!rc.onTheMap(" +
+        locVar +
+        ") || rc.isLocationOccupied(" +
+        locVar +
+        ")) {"
+    );
+    increaseIndentation();
+    // body of if, done if location is valid
+
+    decreaseIndentation();
+    WL("} else {");
+    increaseIndentation();
+    // body of else, done if location is invalid
+    WL(locVar + " = null;")
+    decreaseIndentation();
+    WL("}", "");
+  });
 
   // Further iterations
-  WComment("Possibly do more iterations to increase accuracy in difficult situations.")
+  WComment(
+    "Possibly do more iterations to increase accuracy in difficult situations."
+  );
   WLoop("iterations", () => {
     // Loop body
-    WL("//TODO")
-  })
+    WL("//TODO");
+  });
 
   // Return best direction
   WL("return null;"); // TODO
