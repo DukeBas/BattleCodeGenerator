@@ -77,7 +77,7 @@ function generateBMF(range) {
   WComment(
     "Variable declarations. Location names based on off-set from origin."
   );
-  WL("static MapLocation ownLoc;", "");
+  WL("static MapLocation loc_0_0; // own location", "");
   offsets.forEach((offset) => {
     WL("// Variables for " + offset);
     /*
@@ -116,15 +116,20 @@ function generateBMF(range) {
 
   // First iteration (necessary, different in that it requests game values)
   WComment("Initialise variables from game world for current situation");
-  WL("ownLoc = rc.getLocation();");
+  WL("loc_0_0 = rc.getLocation();");
   offsets.forEach((offset) => {
-    let locVar = offset.toVariableName("loc_");
-    WL(locVar + " = TODO");
+    const locVar = offset.toVariableName("loc_");
+    const initalisedLocation =  getNearestFilledLocation(offset);
+    const initdVar = initalisedLocation.toVariableName("loc_");
+    const dir =  dxdyToDirection(
+      offset.x - initalisedLocation.x, 
+      offset.y - initalisedLocation.y);
+    WL(locVar + " = " + initdVar + ".add("+ dir+ ");");
   });
   WL();
 
   offsets.forEach((offset) => {
-    let locVar = offset.toVariableName("loc_");
+    const locVar = offset.toVariableName("loc_");
 
     WL("// Check validity for " + offset);
     WL(
@@ -210,27 +215,27 @@ function distanceToOrigin(x, y) {
 
 /**
  * Gets in game direction corresponding to a difference in x and y from own position (of max 1).
- * 
+ *
  * @param {number} dx -1,0,1
  * @param {number} dy -1,0,1
  * @returns ingame direction corresponding to the x and y
  */
 function dxdyToDirection(dx, dy) {
-  let output = "Direction."
+  let output = "Direction.";
   switch (dx) {
     case -1:
       switch (dy) {
         case -1:
           // Bottom left
-          output += "SOUTHWEST"
+          output += "SOUTHWEST";
           break;
         case 0:
           // Left
-          output += "WEST"
+          output += "WEST";
           break;
         case 1:
           // Top left
-          output += "NORTHWEST"
+          output += "NORTHWEST";
           break;
       }
       break;
@@ -238,7 +243,7 @@ function dxdyToDirection(dx, dy) {
       switch (dy) {
         case -1:
           // Below
-          output += "NORTH"
+          output += "SOUTH";
           break;
         case 0:
           // Own location!!
@@ -246,7 +251,7 @@ function dxdyToDirection(dx, dy) {
           break;
         case 1:
           // Above
-          output += "SOUTH"
+          output += "NORTH";
           break;
       }
       break;
@@ -254,19 +259,19 @@ function dxdyToDirection(dx, dy) {
       switch (dy) {
         case -1:
           // Bottom right
-          output += "SOUTHEAST"
+          output += "SOUTHEAST";
           break;
         case 0:
           // Right
-          output += "EAST"
+          output += "EAST";
           break;
         case 1:
           // Top right
-          output += "NORTHEAST"
+          output += "NORTHEAST";
           break;
       }
       break;
   }
-  
-  return output + ";";
+
+  return output;
 }
