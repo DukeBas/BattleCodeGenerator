@@ -51,6 +51,12 @@ function generateBMF(range) {
   // Generate all tiles we need to consider (in order).
   let offsets = getOffsetsInRange(range);
 
+  // Class Javadoc
+  WJavadoc(
+    "Pathfinding class for a vision range of " + range + " r^2",
+    "using a simplified Bellman-Ford."
+  )
+
   // Class declaration
   WL("public class BMF" + range + " {", "");
   increaseIndentation();
@@ -65,10 +71,10 @@ function generateBMF(range) {
      * cost (what added that location would add to total cost, likely something like passability/rubble)
      * Direction (to previous tile in path)
      */
-    WL("MapLocation " + offset.toVariableName("loc_") + ";");
-    WL("int " + offset.toVariableName("pathLength_") + ";");
-    WL("int " + offset.toVariableName("cost_") + ";");
-    WL("Direction " + offset.toVariableName("bestDir_") + ";");
+    WL("static MapLocation " + offset.toVariableName("loc_") + ";");
+    WL("static int " + offset.toVariableName("pathLength_") + ";");
+    WL("static int " + offset.toVariableName("cost_") + ";");
+    WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
     WL();
   });
@@ -97,6 +103,10 @@ function generateBMF(range) {
   // First iteration (necessary, different in that it requests game values)
 
   // Further iterations
+
+  // Return best direction
+  WL("return null;"); // TODO
+
 
   // Close the function
   decreaseIndentation();
