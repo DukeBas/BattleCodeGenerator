@@ -58,6 +58,7 @@ function generateBMF(range) {
   WL(
     "import battlecode.common.Direction;",
     "import battlecode.common.MapLocation;",
+    "import battlecode.common.GameActionException;",
     "import battlecode.common.RobotController;",
     "",
     ""
@@ -109,7 +110,8 @@ function generateBMF(range) {
 
   // Generate function signature
   WL(
-    "public Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) { "
+    "public Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) ",
+    "throws GameActionException {"
   );
   increaseIndentation();
   WL();
