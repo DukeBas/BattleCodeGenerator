@@ -59,7 +59,7 @@ function decreaseIndentation() {
  * @param {String} it_name variable name of iterator (only really matters in nested loops)
  */
 function WLoop(iterations, inside, it_name = "i") {
-  WL("for (int " + it_name + " = " + iterations + "; --i > 0; ) {");
+  WL("for (int " + it_name + " = " + iterations + "; --i >= 0; ) {");
   increaseIndentation();
   inside();
   decreaseIndentation();

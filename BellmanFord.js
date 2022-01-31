@@ -102,7 +102,7 @@ function generateBMF(range) {
      * Direction (to previous tile in path)
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
-    WL("static int " + offset.toVariableName("pathLength_") + ";");
+    WL("static int " + offset.toVariableName("pathLength_")+ " = Integer.MAX_VALUE;");
     WL("static int " + offset.toVariableName("cost_") + ";");
     WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
@@ -124,7 +124,7 @@ function generateBMF(range) {
 
   // Generate function signature
   WL(
-    "public Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) ",
+    "public static Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) ",
     "throws GameActionException {"
   );
   increaseIndentation();
@@ -142,8 +142,8 @@ function generateBMF(range) {
       offset.y - initalisedLocation.y
     );
     WL(locVar + " = " + initdVar + ".add(" + dir + ");");
-    WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;");
-    WL(offset.toVariableName("bestDir_") + " = null;");
+    // WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;");
+    // WL(offset.toVariableName("bestDir_") + " = null;");
   });
   WL();
 
@@ -171,15 +171,12 @@ function generateBMF(range) {
     WL("}", "");
   });
 
-  WComment("Getting the shortest route to each location");
-
+  WComment("Getting the shortest route to each location; do edge relaxations.");
   WLoop("iterations", () => {
     // Loop body
-    WL("//TODO");
     offsets.forEach((offset) => {
       const locVar = offset.toVariableName("loc_");
 
-      WL("// ... " + offset);
       WL("if (" + locVar + " != null) {");
       increaseIndentation();
       // We check every tile that is in our range
@@ -192,16 +189,45 @@ function generateBMF(range) {
             // Only check locations that we can actually see
             if (distanceToOrigin(modifiedX, modifiedY) <= range) {
               // Location we need to check!
-              // if their pathlength + our cost is lower than our path length, switch over
+              let locToCheck = new Location(modifiedX, modifiedY);
+              // WL("if their pathlength + our cost is lower than our path length, switch over")
+              WL("// Checking " + offset + " to " + locToCheck)
+              WL(
+                "if (" +
+                  locToCheck.toVariableName("pathLength_") +
+                  " + " +
+                  offset.toVariableName("cost_") +
+                  " < " +
+                  offset.toVariableName("pathLength_") +
+                  ") {"
+              );
+              increaseIndentation();
+              // If we are here in execution, we have found a better route!
+              WL(
+                offset.toVariableName("pathLength_") +
+                  " = " +
+                  locToCheck.toVariableName("pathLength_") +
+                  " + " +
+                  offset.toVariableName("cost_") +
+                  ";"
+              );
+              const dir = dxdyToDirection(
+                locToCheck.x - offset.x,
+                locToCheck.y - offset.y
+              );
+              WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+              decreaseIndentation();
+              WL("}");
             }
           }
         }
       }
 
       decreaseIndentation();
-      WL("}");
+      WL("}", "");
     });
   });
+  WL();
 
   // Return best direction
   WL("return null;"); // TODO
