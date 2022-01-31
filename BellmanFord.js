@@ -51,6 +51,10 @@ function generateBMF(range) {
   // Generate all tiles we need to consider (in order).
   let offsets = getOffsetsInRange(range);
 
+  // Class declaration
+  WL("public class BMF" + range + " {", "");
+  increaseIndentation();
+
   // Generate variable declarations.
   WComment("Variable declarations. Names based on off-set from origin.");
   offsets.forEach((offset) => {
@@ -95,6 +99,10 @@ function generateBMF(range) {
   // Further iterations
 
   // Close the function
+  decreaseIndentation();
+  WL("}", "");
+
+  // Close class
   decreaseIndentation();
   WL("}");
 }

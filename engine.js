@@ -74,7 +74,7 @@ function WLoop(iterations, inside, it_name = "i") {
 function WJavadoc(...toWrite) {
   WL("/**");
   toWrite.forEach((element) => {
-    codeBlock.innerHTML += "* " + element + "<br>";
+    WL("* " + element);
   });
   WL("*/");
 }
@@ -88,7 +88,7 @@ function WComment(...toWrite) {
   if (commentsEnabled) {
     WL("/*");
     toWrite.forEach((element) => {
-      codeBlock.innerHTML += "* " + element + "<br>";
+      WL("* " + element);
     });
     WL("*/");
   }
