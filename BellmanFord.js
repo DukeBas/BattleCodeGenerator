@@ -56,15 +56,15 @@ function generateBMF(range) {
   offsets.forEach((offset) => {
     WL("// Variables for " + offset);
     /*
-     * for each location (graph vertex) we keep MapLocation,
+     * for each location (graph vertex) we keep MapLocation (null if not valid (not on map/occupied)),
      * path-length (shortest currently known length of path from origin to location),
      * cost (what added that location would add to total cost, likely something like passability/rubble)
      * Direction (to previous tile in path)
      */
-    WL("MapLocation " + offset.toVariableName("loc_"));
-    WL("int " + offset.toVariableName("pathLength_"));
-    WL("int " + offset.toVariableName("cost_"));
-    WL("Direction " + offset.toVariableName("bestDir_"));
+    WL("MapLocation " + offset.toVariableName("loc_") + ";");
+    WL("int " + offset.toVariableName("pathLength_") + ";");
+    WL("int " + offset.toVariableName("cost_") + ";");
+    WL("Direction " + offset.toVariableName("bestDir_") + ";");
 
     WL();
   });
@@ -101,7 +101,3 @@ function generateBMF(range) {
 
 // call main function
 generateBMF(34);
-
-WLoop(10, () => {
-  WL("//test");
-});

@@ -3,27 +3,15 @@
 
 /**
  * Record type to hold an x and y.
- * Can also hold extra information about adjacent locations,
- * the meaning of which is dependent on the context.
  */
 class Location {
   // x and y coordinates
   x;
   y;
 
-  // cardinal directions, optional
-  n;
-  e;
-  s;
-  w;
-
   constructor(x, y, north, east, south, west) {
     this.x = x;
     this.y = y;
-    this.n = north;
-    this.e = east;
-    this.s = south;
-    this.w = west;
   }
 
   toString() {
@@ -32,12 +20,21 @@ class Location {
 
   /**
    * Used to generate a variable name based on this location, with possible pre and postfix.
-   * 
+   *
    * @param {String} pre prefix, before the variable body
    * @param {String} post postfix, after the variable body
    */
   toVariableName(pre = "", post = "") {
-    return pre + this.x + "_" + this.y + post;
+    let writeX = 0;
+    let writeY = 0;
+
+    if (this.x > 0) writeX = "p" + this.x;
+    if (this.y > 0) writeY = "p" + this.y;
+
+    if (this.x < 0) writeX = "n" + (Math.abs(this.x));
+    if (this.y < 0) writeY = "n" + (Math.abs(this.y));
+
+    return pre + writeX + "_" + writeY + post;
   }
 }
 

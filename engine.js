@@ -13,7 +13,7 @@ let commentsEnabled = true;
  * Write line(s) to output code block. Use comma's to write multiple lines.
  * Writes empty line if no arguments are given. Uses current indentation level
  *
- * @param {String} toWrite any number of lines to write
+ * @param {...String} toWrite any number of lines to write
  */
 function WL(...toWrite) {
   let indendation = "";
