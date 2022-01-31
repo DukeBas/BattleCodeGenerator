@@ -98,12 +98,13 @@ function generateBMF(range) {
     "@param rc RobotController of the robot calling this function,",
     "          this robot's location will be used as origin.",
     "@param target location on the map to pathfind towards.",
+    "@param iterations number of additional iterations of Bellman-Ford done beyond initalisation",
     "@returns the direction to go in"
   );
 
   // Generate function signature
   WL(
-    "public Direction getDirectionTo(RobotController rc, MapLocation target) { "
+    "public Direction pathfindTo(RobotController rc, MapLocation target, int iterations) { "
   );
   increaseIndentation();
   WL();
@@ -114,6 +115,11 @@ function generateBMF(range) {
   // First iteration (necessary, different in that it requests game values)
 
   // Further iterations
+  WComment("Possibly do more iterations to increase accuracy in difficult situations.")
+  WLoop("iterations", () => {
+    // Loop body
+    WL("//TODO")
+  })
 
   // Return best direction
   WL("return null;"); // TODO
