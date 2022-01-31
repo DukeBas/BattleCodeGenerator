@@ -23,12 +23,12 @@ function WL(...toWrite) {
   }
 
   if (toWrite.length == 0) {
-    codeBlock.innerHTML += indendation + "<br>";
+    codeBlock.innerHTML += indendation + "\n";
   } else {
     toWrite.forEach((element) => {
       if (commentsEnabled || !element.includes("//")) {
         // Print if it's not a comment while they are disabled.
-        codeBlock.innerHTML += indendation + element + "<br>";
+        codeBlock.innerHTML += indendation + element + "\n";
       }
     });
   }

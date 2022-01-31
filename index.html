@@ -5,13 +5,20 @@
     <title>BattleCodeGenerator</title>
   </head>
 
-  <script src="engine.js" defer></script> 
-  <script src="helper.js" defer></script> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
+
+  <script src="engine.js" defer></script>
+  <script src="helper.js" defer></script>
 
   <!-- UNCOMMENT ALL THE CODE SCRIPTS THAT NEED TO BE GENERATED -->
   <!-- <script src="example.js" defer> </script> -->
-  <script src="BellmanFord.js" defer> </script>
+  <script src="BellmanFord.js" defer></script>
   <!-- -------------------------------------------------------- -->
+
+  <script> // Markup for code
+    hljs.highlightAll();
+  </script>
 
   <style>
     body {
@@ -25,20 +32,15 @@
       margin: auto;
     }
 
-    code {
-      background-color: #303030;
-      color: white;
-      padding: 5px;
-      font-size: medium;
-    }
+
   </style>
 
   <body>
     <div class="content">
       <!-- This is where our generated code will go -->
-      <code id="code-block">
-        <br />
-      </code>
+      <pre>
+      <code id="code-block" class="language-java"></code>
+    </pre>
     </div>
   </body>
 </html>
