@@ -109,7 +109,7 @@ function generateBMF(range) {
 
   // Generate function signature
   WL(
-    "public Direction pathfindTo(RobotController rc, MapLocation target, int iterations) { "
+    "public Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) { "
   );
   increaseIndentation();
   WL();
