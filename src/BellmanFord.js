@@ -48,6 +48,7 @@ generateBMF(20);
 //////TODO
 // Unreachable goal?
 // Goal outside of vision?
+// Write out number of here iterations and optimise for it
 
 /**
  * Generates Battlecode Bellman-Ford algorithm in Java.
@@ -124,7 +125,7 @@ function generateBMF(range) {
 
   // Generate function signature
   WL(
-    "public static Direction pathfindTo(final RobotController rc, final MapLocation target, final int extra_its) ",
+    "public static Direction pathfindTo(final RobotController rc, MapLocation target, final int extra_its) ",
     "throws GameActionException {"
   );
   increaseIndentation();
@@ -146,6 +147,26 @@ function generateBMF(range) {
     // WL(offset.toVariableName("bestDir_") + " = null;");
   });
   WL();
+
+  // Firstly, check if location is in vision range, if not pick a location to path to instead
+  WComment(
+    "Check if location is in vision range, if it is not then pick a location to path to instead."
+  );
+  WL("if (loc_0_0.distanceSquaredTo(target) > " + range + ") {");
+  increaseIndentation();
+  WL(
+    "// target is not currently in vision range",
+    "MapLocation nextLoc = loc_0_0.add(loc_0_0.directionTo(target));",
+    "MapLocation safe = nextLoc;",
+    "// generate a closer target, in the direction of the actual target",
+    "while (loc_0_0.distanceSquaredTo(nextLoc) <= " + range + "){",
+    "    safe = nextLoc;",
+    "    nextLoc = nextLoc.add(nextLoc.directionTo(target));",
+    "}",
+    "target = safe;"
+  );
+  decreaseIndentation();
+  WL("}", "");
 
   WComment("Check for each location if it is valid");
   offsets.forEach((offset) => {
