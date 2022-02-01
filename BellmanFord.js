@@ -118,7 +118,7 @@ function generateBMF(range) {
     "@param rc         RobotController of the robot calling this function,",
     "                  this robot's location will be used as origin.",
     "@param target     location on the map to pathfind towards.",
-    "@param iterations number of  iterations of edge-relaxation are done (at least 1!)",
+    "@param iterations number of additional iterations of edge-relaxation are done beyond initalisation",
     "@returns the direction to go in"
   );
 
@@ -171,7 +171,61 @@ function generateBMF(range) {
     WL("}", "");
   });
 
-  WComment("Getting the shortest route to each location; do edge relaxations.");
+  WComment("Do initial edge-relaxation.")
+  offsets.forEach((offset) => {
+    const locVar = offset.toVariableName("loc_");
+
+    WL("if (" + locVar + " != null) {");
+    increaseIndentation();
+    // We check every tile that is in our range
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        if (i != 0 || j != 0) {
+          // do not check for own location...
+          let modifiedX = offset.x + i;
+          let modifiedY = offset.y + j;
+          // Only check locations that are initalised already
+          if (distanceToOrigin(modifiedX, modifiedY) <= distanceToOrigin(offset.x, offset.y) - 1) {
+            // Location we need to check!
+            let locToCheck = new Location(modifiedX, modifiedY);
+            // WL("if their pathlength + our cost is lower than our path length, switch over")
+            WL("// Checking " + offset + " to " + locToCheck)
+            WL(
+              "if (" +
+                locToCheck.toVariableName("pathLength_") +
+                " + " +
+                offset.toVariableName("cost_") +
+                " < " +
+                offset.toVariableName("pathLength_") +
+                ") {"
+            );
+            increaseIndentation();
+            // If we are here in execution, we have found a better route!
+            WL(
+              offset.toVariableName("pathLength_") +
+                " = " +
+                locToCheck.toVariableName("pathLength_") +
+                " + " +
+                offset.toVariableName("cost_") +
+                ";"
+            );
+            const dir = dxdyToDirection(
+              locToCheck.x - offset.x,
+              locToCheck.y - offset.y
+            );
+            WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            decreaseIndentation();
+            WL("}");
+          }
+        }
+      }
+    }
+
+    decreaseIndentation();
+    WL("}", "");
+  });
+
+  WComment("Possibly improve on shortest route, do more edge-relaxation iterations.");
   WLoop("iterations", () => {
     // Loop body
     offsets.forEach((offset) => {
