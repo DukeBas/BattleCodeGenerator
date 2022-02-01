@@ -102,7 +102,7 @@ function generateBMF(range) {
      * Direction (to previous tile in path)
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
-    WL("static int " + offset.toVariableName("pathLength_")+ " = 1147483647;");
+    WL("static int " + offset.toVariableName("pathLength_") + " = 1147483647;");
     WL("static int " + offset.toVariableName("cost_") + ";");
     WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
@@ -171,25 +171,42 @@ function generateBMF(range) {
     WL("}", "");
   });
 
-  WComment("Do initial edge-relaxation.")
+  WComment("Do initial edge-relaxation.");
   offsets.forEach((offset) => {
     const locVar = offset.toVariableName("loc_");
 
-    WL("if (" + locVar + " != null) {");
-    increaseIndentation();
-    // We check every tile that is in our range
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (i != 0 || j != 0) {
-          // do not check for own location...
+    if (distanceToOrigin(offset.x, offset.y) <= 2) {
+      // Tiles around origin
+      WL("// Assigning " + offset);
+      WL(
+        offset.toVariableName("pathLength_") +
+          " = " +
+          "pathLength_0_0" +
+          " + " +
+          offset.toVariableName("cost_") +
+          ";"
+      );
+      const dir = dxdyToDirection(0 - offset.x, 0 - offset.y);
+      WL(offset.toVariableName("bestDir_") + " = " + dir + ";", "");
+    } else {
+      // 8 tiles around origin, always shortest path by connecting with origin.
+      WL("if (" + locVar + " != null) {");
+      increaseIndentation();
+      // We check every tile that is in our range
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue; // do not check for own location...
+
           let modifiedX = offset.x + i;
           let modifiedY = offset.y + j;
+          let currentRange = distanceToOrigin(modifiedX, modifiedY);
+
           // Only check locations that are initalised already
-          if (distanceToOrigin(modifiedX, modifiedY) <= distanceToOrigin(offset.x, offset.y) - 1) {
+          if (currentRange < distanceToOrigin(offset.x, offset.y)) {
             // Location we need to check!
             let locToCheck = new Location(modifiedX, modifiedY);
             // WL("if their pathlength + our cost is lower than our path length, switch over")
-            WL("// Checking " + offset + " to " + locToCheck)
+            WL("// Checking " + offset + " to " + locToCheck);
             WL(
               "if (" +
                 locToCheck.toVariableName("pathLength_") +
@@ -219,13 +236,15 @@ function generateBMF(range) {
           }
         }
       }
-    }
 
-    decreaseIndentation();
-    WL("}", "");
+      decreaseIndentation();
+      WL("}", "");
+    }
   });
 
-  WComment("Possibly improve on shortest route, do more edge-relaxation iterations.");
+  WComment(
+    "Possibly improve on shortest route, do more edge-relaxation iterations."
+  );
   WLoop("iterations", () => {
     // Loop body
     offsets.forEach((offset) => {
@@ -236,43 +255,50 @@ function generateBMF(range) {
       // We check every tile that is in our range
       for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
-          if (i != 0 || j != 0) {
-            // do not check for own location...
-            let modifiedX = offset.x + i;
-            let modifiedY = offset.y + j;
-            // Only check locations that we can actually see
-            if (distanceToOrigin(modifiedX, modifiedY) <= range) {
-              // Location we need to check!
-              let locToCheck = new Location(modifiedX, modifiedY);
-              // WL("if their pathlength + our cost is lower than our path length, switch over")
-              WL("// Checking " + offset + " to " + locToCheck)
-              WL(
-                "if (" +
-                  locToCheck.toVariableName("pathLength_") +
-                  " + " +
-                  offset.toVariableName("cost_") +
-                  " < " +
-                  offset.toVariableName("pathLength_") +
-                  ") {"
-              );
-              increaseIndentation();
-              // If we are here in execution, we have found a better route!
-              WL(
+          if (i === 0 && j === 0) continue; // do not check for own location...
+
+          let modifiedX = offset.x + i;
+          let modifiedY = offset.y + j;
+
+          let currentRange = distanceToOrigin(modifiedX, modifiedY);
+
+          if (currentRange <= 2) {
+            // 8 tiles around origin, shortest path already set.
+            continue;
+          }
+
+          // Only check locations that we can actually see
+          if (currentRange <= range) {
+            // Location we need to check!
+            let locToCheck = new Location(modifiedX, modifiedY);
+            // WL("if their pathlength + our cost is lower than our path length, switch over")
+            WL("// Checking " + offset + " to " + locToCheck);
+            WL(
+              "if (" +
+                locToCheck.toVariableName("pathLength_") +
+                " + " +
+                offset.toVariableName("cost_") +
+                " < " +
                 offset.toVariableName("pathLength_") +
-                  " = " +
-                  locToCheck.toVariableName("pathLength_") +
-                  " + " +
-                  offset.toVariableName("cost_") +
-                  ";"
-              );
-              const dir = dxdyToDirection(
-                locToCheck.x - offset.x,
-                locToCheck.y - offset.y
-              );
-              WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
-              decreaseIndentation();
-              WL("}");
-            }
+                ") {"
+            );
+            increaseIndentation();
+            // If we are here in execution, we have found a better route!
+            WL(
+              offset.toVariableName("pathLength_") +
+                " = " +
+                locToCheck.toVariableName("pathLength_") +
+                " + " +
+                offset.toVariableName("cost_") +
+                ";"
+            );
+            const dir = dxdyToDirection(
+              locToCheck.x - offset.x,
+              locToCheck.y - offset.y
+            );
+            WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            decreaseIndentation();
+            WL("}");
           }
         }
       }
