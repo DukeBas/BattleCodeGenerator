@@ -115,16 +115,16 @@ function generateBMF(range) {
     "Uses own location, target and runs a simplified Bellman-Ford algorithm ",
     "to get the best direction to walk to get to the target.",
     "",
-    "@param rc         RobotController of the robot calling this function,",
-    "                  this robot's location will be used as origin.",
-    "@param target     location on the map to pathfind towards.",
-    "@param iterations number of additional iterations of edge-relaxation are done beyond initalisation",
+    "@param rc        RobotController of the robot calling this function,",
+    "                 this robot's location will be used as origin.",
+    "@param target    location on the map to pathfind towards.",
+    "@param extra_its number of additional iterations of edge-relaxation are done beyond initalisation",
     "@returns the direction to go in"
   );
 
   // Generate function signature
   WL(
-    "public static Direction pathfindTo(final RobotController rc, final MapLocation target, final int iterations) ",
+    "public static Direction pathfindTo(final RobotController rc, final MapLocation target, final int extra_its) ",
     "throws GameActionException {"
   );
   increaseIndentation();
@@ -245,7 +245,7 @@ function generateBMF(range) {
   WComment(
     "Possibly improve on shortest route, do more edge-relaxation iterations."
   );
-  WLoop("iterations", () => {
+  WLoop("extra_its", () => {
     // Loop body
     offsets.forEach((offset) => {
       const locVar = offset.toVariableName("loc_");
