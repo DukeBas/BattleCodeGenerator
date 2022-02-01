@@ -102,7 +102,7 @@ function generateBMF(range) {
      * Direction (to previous tile in path)
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
-    WL("static int " + offset.toVariableName("pathLength_")+ " = Integer.MAX_VALUE;");
+    WL("static int " + offset.toVariableName("pathLength_")+ " = 1147483647;");
     WL("static int " + offset.toVariableName("cost_") + ";");
     WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
