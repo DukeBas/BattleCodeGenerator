@@ -1,0 +1,26 @@
+{
+  "name": "BattleCodeGenerator",
+  "version": "1.0.0",
+  "description": "Scripts to generate bytecode efficient Java code for competitions like Battlecode.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^27.4.7"
+  },
+  "scripts": {
+    "test": "jest --verbose ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DukeBas/BattleCodeGenerator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/DukeBas/BattleCodeGenerator/issues"
+  },
+  "homepage": "https://github.com/DukeBas/BattleCodeGenerator#readme"
+}
