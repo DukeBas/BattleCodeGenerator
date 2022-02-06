@@ -252,7 +252,12 @@ function generateBMF(range) {
             //   locToCheck.y - offset.y
             // );
             // WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
-            WL(offset.toVariableName("bestDir_") + " = "+locToCheck.toVariableName("bestDir_"));
+            WL(
+              offset.toVariableName("bestDir_") +
+                " = " +
+                locToCheck.toVariableName("bestDir_") +
+                ";"
+            );
             decreaseIndentation();
             WL("}");
           }
@@ -319,7 +324,12 @@ function generateBMF(range) {
             //   locToCheck.y - offset.y
             // );
             // WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
-            WL(offset.toVariableName("bestDir_") + " = "+locToCheck.toVariableName("bestDir_"));
+            WL(
+              offset.toVariableName("bestDir_") +
+                " = " +
+                locToCheck.toVariableName("bestDir_") +
+                ";"
+            );
             decreaseIndentation();
             WL("}");
           }
