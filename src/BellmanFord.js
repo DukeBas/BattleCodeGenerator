@@ -25,7 +25,7 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
     If dist[U] + edgeweight(U, V) < dist[V}
       Error: Negative Cycle Exists                
 
-  return dist[], previ[]
+  return dist[], prev[]
 */
 
 /*
@@ -100,7 +100,7 @@ function generateBMF(range) {
      * for each location (graph vertex) we keep MapLocation (null if not valid (not on map/occupied)),
      * path-length (shortest currently known length of path from origin to location),
      * cost (what added that location would add to total cost, likely something like passability/rubble)
-     * Direction (to previous tile in path)
+     * Direction (first step taken in path)
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
     WL("static int " + offset.toVariableName("pathLength_") + " = 1147483647;");
@@ -181,12 +181,12 @@ function generateBMF(range) {
         ")) {"
     );
     increaseIndentation();
-    // body of if, done if location is valid
+    // body of if, done when location is valid
     WL(offset.toVariableName("cost_") + " = rc.senseRubble(" + locVar + ");");
     decreaseIndentation();
     WL("} else {");
     increaseIndentation();
-    // body of else, done if location is invalid
+    // body of else, done when location is invalid
     WL(locVar + " = null;");
     decreaseIndentation();
     WL("}", "");
@@ -247,11 +247,12 @@ function generateBMF(range) {
                 offset.toVariableName("cost_") +
                 ";"
             );
-            const dir = dxdyToDirection(
-              locToCheck.x - offset.x,
-              locToCheck.y - offset.y
-            );
-            WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            // const dir = dxdyToDirection(
+            //   locToCheck.x - offset.x,
+            //   locToCheck.y - offset.y
+            // );
+            // WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            WL(offset.toVariableName("bestDir_") + " = "+locToCheck.toVariableName("bestDir_"));
             decreaseIndentation();
             WL("}");
           }
@@ -313,11 +314,12 @@ function generateBMF(range) {
                 offset.toVariableName("cost_") +
                 ";"
             );
-            const dir = dxdyToDirection(
-              locToCheck.x - offset.x,
-              locToCheck.y - offset.y
-            );
-            WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            // const dir = dxdyToDirection(
+            //   locToCheck.x - offset.x,
+            //   locToCheck.y - offset.y
+            // );
+            // WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+            WL(offset.toVariableName("bestDir_") + " = "+locToCheck.toVariableName("bestDir_"));
             decreaseIndentation();
             WL("}");
           }
