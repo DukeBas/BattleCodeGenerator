@@ -343,13 +343,57 @@ function generateBMF(range) {
   WL();
 
   // Return best direction
-  WL("return null;"); // TODO
+  WL("return getBestDirection();"); // TODO
 
   // Close the function
   decreaseIndentation();
   WL("}", "");
 
+  // Add getBestDirection function
+  genGetBestDirection(offsets);
+
   // Close class
+  decreaseIndentation();
+  WL("}");
+}
+
+/**
+ * 
+ * @param {Location[]} offsets array of locations generated earlier
+ */
+function genGetBestDirection(offsets){
+  WL("private Direction getBestDirection {");
+  increaseIndentation();
+
+  // function body
+  const tilesInRange = new Map();
+  offsets.forEach((offset) => {
+    const x = offset.x;
+    const y = offset.y;
+
+    if (!tilesInRange.has(x)){ // xMap is not defined yet, create map
+      tilesInRange.set(x, new Set());
+    }
+    xMap = tilesInRange.get(x);
+    xMap.add(y);    
+  });
+
+  // all pairs of x and set of y coords
+  const pairs = [...tilesInRange];
+
+  WL("switch1");
+  increaseIndentation();
+  pairs.forEach((pair) => {
+    WL("case "+pair[0]+" switch2 ");
+    increaseIndentation();
+    pair[1].forEach((y) => {
+      WL("case " +y + " ");
+    })
+    decreaseIndentation();
+  });
+  decreaseIndentation();
+
+
   decreaseIndentation();
   WL("}");
 }

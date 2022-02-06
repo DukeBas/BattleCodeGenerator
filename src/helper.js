@@ -9,7 +9,7 @@ class Location {
   x;
   y;
 
-  constructor(x, y, north, east, south, west) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
   }
