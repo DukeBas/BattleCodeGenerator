@@ -44,7 +44,7 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
 
 // Settings
 const initPathLength = 1147483647;
-const initCost = 12345;
+const initCost = 110; // max tile cost + step cost
 
 // call main function
 generateBMF(20);
@@ -93,9 +93,9 @@ function generateBMF(range) {
   WL(
     "// Variables for (0,0), own location",
     "static MapLocation loc_0_0;",
-    "static final int pathLength_0_0 = 0;",
-    "// we do not need a cost for starting location",
-    "static final Direction bestDir_0_0 = Direction.CENTER;",
+    // "static final int pathLength_0_0 = 0;",
+    // "// we do not need a cost for starting location",
+    // "static final Direction bestDir_0_0 = Direction.CENTER;",
     ""
   );
   offsets.forEach((offset) => {
@@ -469,7 +469,6 @@ function genGetBestDirection(offsets) {
   WL(
     "// If this is reached, goal was somehow not in range",
     "return Direction.CENTER;",
-    ""
   );
 
   decreaseIndentation();
