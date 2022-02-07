@@ -120,7 +120,7 @@ function generateBMF(range) {
     "                 this robot's location will be used as origin.",
     "@param target    location on the map to pathfind towards.",
     "@param extra_its number of additional iterations of edge-relaxation are done beyond initialisation",
-    "@returns the direction to go in"
+    "@return the direction to go in"
   );
 
   // Generate function signature
@@ -136,7 +136,7 @@ function generateBMF(range) {
   WL("loc_0_0 = rc.getLocation();");
   WL(
     "// check if we are already at the destination",
-    "if if (loc_0_0.equals(target)) return Direction.CENTER;"
+    "if (loc_0_0.equals(target)) return Direction.CENTER;"
   );
   offsets.forEach((offset) => {
     const locVar = offset.toVariableName("loc_");
@@ -191,6 +191,7 @@ function generateBMF(range) {
     WL("} else {");
     increaseIndentation();
     // body of else, done when location is invalid
+    // WL("rc.setIndicatorDot("+ locVar + ", 255, 0, 0);");
     WL(locVar + " = null;");
     decreaseIndentation();
     WL("}", "");
@@ -206,10 +207,8 @@ function generateBMF(range) {
       WL(
         offset.toVariableName("pathLength_") +
           " = " +
-          "pathLength_0_0" +
-          " + " +
           offset.toVariableName("cost_") +
-          ";"
+          " + 10;"
       );
       const dir = dxdyToDirection(0 - offset.x, 0 - offset.y);
       WL(offset.toVariableName("bestDir_") + " = " + dir + ";", "");
@@ -237,7 +236,7 @@ function generateBMF(range) {
                 locToCheck.toVariableName("pathLength_") +
                 " + " +
                 offset.toVariableName("cost_") +
-                " < " +
+                " + 10 < " +
                 offset.toVariableName("pathLength_") +
                 ") {"
             );
@@ -249,7 +248,7 @@ function generateBMF(range) {
                 locToCheck.toVariableName("pathLength_") +
                 " + " +
                 offset.toVariableName("cost_") +
-                ";"
+                " + 10;"
             );
             // const dir = dxdyToDirection(
             //   locToCheck.x - offset.x,
@@ -345,6 +344,29 @@ function generateBMF(range) {
     });
   });
   WL();
+
+  ///////// TEMP FOR DEBUGGING:
+  WL("rc.setIndicatorLine(loc_0_0, target, 100, 100, 100);");
+  let nextTo = getOffsetsInRange(range);
+  nextTo.forEach((l) => { // NORTHEAST
+    WL(
+      "if (" +
+        l.toVariableName("loc_") +
+        " != null) { ",
+        "    switch (" + l.toVariableName("bestDir_") + ") {",
+      "    case NORTH: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 0, 0); break;",
+      "    case NORTHWEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 255, 0); break;",
+      "    case WEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 0, 255); break;",
+      "    case SOUTHWEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 0, 0); break;",
+      "    case SOUTH: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 255, 0); break;",
+      "    case SOUTHEAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 255, 255); break;",
+      "    case EAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 0, 255); break;",
+      "    case NORTHEAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 255, 255); break;",
+      "    }",
+      "}"
+    );
+  });
+  //////////////////////////////
 
   // Return best direction
   WComment(
