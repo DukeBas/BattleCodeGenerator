@@ -119,7 +119,7 @@ function generateBMF(range) {
     "@param rc        RobotController of the robot calling this function,",
     "                 this robot's location will be used as origin.",
     "@param target    location on the map to pathfind towards.",
-    "@param extra_its number of additional iterations of edge-relaxation are done beyond initalisation",
+    "@param extra_its number of additional iterations of edge-relaxation are done beyond initialisation",
     "@returns the direction to go in"
   );
 
@@ -343,7 +343,7 @@ function generateBMF(range) {
   WL();
 
   // Return best direction
-  WL("return getBestDirection();"); // TODO
+  WL("return getBestDirection(target);");
 
   // Close the function
   decreaseIndentation();
@@ -358,12 +358,17 @@ function generateBMF(range) {
 }
 
 /**
- * 
+ *
  * @param {Location[]} offsets array of locations generated earlier
  */
-function genGetBestDirection(offsets){
-  WL("private Direction getBestDirection {");
+function genGetBestDirection(offsets) {
+  WL("private static Direction getBestDirection (final MapLocation target) {");
   increaseIndentation();
+
+  WComment("Get difference from our origin to goal in x and y.");
+  WL("int dx = target.x - loc_0_0.x;");
+  WL("int dy = target.y - loc_0_0.y;");
+  WL();
 
   // function body
   const tilesInRange = new Map();
@@ -371,28 +376,42 @@ function genGetBestDirection(offsets){
     const x = offset.x;
     const y = offset.y;
 
-    if (!tilesInRange.has(x)){ // xMap is not defined yet, create map
+    if (!tilesInRange.has(x)) {
+      // xMap is not defined yet, create map
       tilesInRange.set(x, new Set());
     }
     xMap = tilesInRange.get(x);
-    xMap.add(y);    
+    xMap.add(y);
   });
 
   // all pairs of x and set of y coords
   const pairs = [...tilesInRange];
 
-  WL("switch1");
+  WL("switch (dx) {");
   increaseIndentation();
   pairs.forEach((pair) => {
-    WL("case "+pair[0]+" switch2 ");
+    WL("case " + pair[0] + ":");
+    increaseIndentation();
+    WL("switch (dy) {");
     increaseIndentation();
     pair[1].forEach((y) => {
-      WL("case " +y + " ");
-    })
+      WL("case " + y + ": ");
+      increaseIndentation();
+      WL("return " + new Location(pair[0], y).toVariableName("bestDir_") + ";");
+      decreaseIndentation();
+    });
     decreaseIndentation();
+    decreaseIndentation();
+    WL("}");
   });
   decreaseIndentation();
+  WL("}");
 
+  WL(
+    "// If this is reached, goal was somehow not in range",
+    "return Direction.CENTER;",
+    ""
+  );
 
   decreaseIndentation();
   WL("}");
