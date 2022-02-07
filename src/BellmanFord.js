@@ -134,6 +134,10 @@ function generateBMF(range) {
   // First iteration (necessary, different in that it requests game values)
   WComment("Initialise variables from game world for current situation");
   WL("loc_0_0 = rc.getLocation();");
+  WL(
+    "// check if we are already at the destination",
+    "if if (loc_0_0.equals(target)) return Direction.CENTER;"
+  );
   offsets.forEach((offset) => {
     const locVar = offset.toVariableName("loc_");
     const initalisedLocation = getNearestFilledLocation(offset);
@@ -343,8 +347,10 @@ function generateBMF(range) {
   WL();
 
   // Return best direction
-  WComment("We return the opposite of the 'best direction', as the ",
-  "best direction is from the perspective of the tile in question.")
+  WComment(
+    "We return the opposite of the 'best direction', as the ",
+    "best direction is from the perspective of the tile in question."
+  );
   WL("return getBestDirection(target).opposite();");
 
   // Close the function
