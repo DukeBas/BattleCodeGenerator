@@ -343,7 +343,9 @@ function generateBMF(range) {
   WL();
 
   // Return best direction
-  WL("return getBestDirection(target);");
+  WComment("We return the opposite of the 'best direction', as the ",
+  "best direction is from the perspective of the tile in question.")
+  WL("return getBestDirection(target).opposite();");
 
   // Close the function
   decreaseIndentation();
