@@ -47,8 +47,8 @@ generateBMF(20);
 
 //////TODO
 // Unreachable goal?
-// Goal outside of vision?
 // Write out number of here iterations and optimise for it
+// Change order at which tiles are looked at for more natural spread
 
 /**
  * Generates Battlecode Bellman-Ford algorithm in Java.
@@ -104,7 +104,7 @@ function generateBMF(range) {
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
     WL("static int " + offset.toVariableName("pathLength_") + " = 1147483647;");
-    WL("static int " + offset.toVariableName("cost_") + ";");
+    WL("static int " + offset.toVariableName("cost_") + " = 10000;");
     WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
     WL();
@@ -186,7 +186,9 @@ function generateBMF(range) {
     );
     increaseIndentation();
     // body of if, done when location is valid
-    WL(offset.toVariableName("cost_") + " = rc.senseRubble(" + locVar + ");");
+    WL(
+      offset.toVariableName("cost_") + " = rc.senseRubble(" + locVar + ") + 10;"
+    );
     decreaseIndentation();
     WL("} else {");
     increaseIndentation();
@@ -204,6 +206,8 @@ function generateBMF(range) {
     if (distanceToOrigin(offset.x, offset.y) <= 2) {
       // Tiles around origin
       WL("// Assigning " + offset);
+      WL("if (" + offset.toVariableName("loc_") + " != null) {");
+      increaseIndentation();
       WL(
         offset.toVariableName("pathLength_") +
           " = " +
@@ -211,7 +215,9 @@ function generateBMF(range) {
           " + 10;"
       );
       const dir = dxdyToDirection(0 - offset.x, 0 - offset.y);
-      WL(offset.toVariableName("bestDir_") + " = " + dir + ";", "");
+      WL(offset.toVariableName("bestDir_") + " = " + dir + ";");
+      decreaseIndentation();
+      WL("}", "");
     } else {
       // 8 tiles around origin, always shortest path by connecting with origin.
       WL("if (" + locVar + " != null) {");
@@ -236,7 +242,7 @@ function generateBMF(range) {
                 locToCheck.toVariableName("pathLength_") +
                 " + " +
                 offset.toVariableName("cost_") +
-                " + 10 < " +
+                " < " +
                 offset.toVariableName("pathLength_") +
                 ") {"
             );
@@ -248,7 +254,7 @@ function generateBMF(range) {
                 locToCheck.toVariableName("pathLength_") +
                 " + " +
                 offset.toVariableName("cost_") +
-                " + 10;"
+                ";"
             );
             // const dir = dxdyToDirection(
             //   locToCheck.x - offset.x,
@@ -348,24 +354,42 @@ function generateBMF(range) {
   ///////// TEMP FOR DEBUGGING:
   WL("rc.setIndicatorLine(loc_0_0, target, 100, 100, 100);");
   let nextTo = getOffsetsInRange(range);
-  nextTo.forEach((l) => { // NORTHEAST
+  nextTo.forEach((l) => {
+    // NORTHEAST
     WL(
-      "if (" +
+      "if (" + l.toVariableName("loc_") + " != null) { ",
+      "    switch (" + l.toVariableName("bestDir_") + ") {",
+      "    case NORTH: rc.setIndicatorDot(" +
         l.toVariableName("loc_") +
-        " != null) { ",
-        "    switch (" + l.toVariableName("bestDir_") + ") {",
-      "    case NORTH: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 0, 0); break;",
-      "    case NORTHWEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 255, 0); break;",
-      "    case WEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 0, 255); break;",
-      "    case SOUTHWEST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 0, 0); break;",
-      "    case SOUTH: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 255, 0); break;",
-      "    case SOUTHEAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 255, 255); break;",
-      "    case EAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 255, 0, 255); break;",
-      "    case NORTHEAST: rc.setIndicatorDot(" + l.toVariableName("loc_") + ", 0, 255, 255); break;",
+        ", 255, 0, 0); break;",
+      "    case NORTHWEST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 0, 255, 0); break;",
+      "    case WEST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 0, 0, 255); break;",
+      "    case SOUTHWEST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 0, 0, 0); break;",
+      "    case SOUTH: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 255, 255, 0); break;",
+      "    case SOUTHEAST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 255, 255, 255); break;",
+      "    case EAST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 255, 0, 255); break;",
+      "    case NORTHEAST: rc.setIndicatorDot(" +
+        l.toVariableName("loc_") +
+        ", 0, 255, 255); break;",
       "    }",
       "}"
     );
   });
+  WL(
+    'rc.setIndicatorString("pathLen: " + String.valueOf(pathLength_n3_n3) + " cost: " + cost_n3_n3);'
+  );
   //////////////////////////////
 
   // Return best direction
