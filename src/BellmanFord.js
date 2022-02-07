@@ -42,6 +42,10 @@ function bellmanFordAlgorithm(G, s) //G is the graph and s is the source vertex
   
 */
 
+// Settings
+const initPathLength = 1147483647;
+const initCost = 12345;
+
 // call main function
 generateBMF(20);
 
@@ -103,8 +107,8 @@ function generateBMF(range) {
      * Direction (first step taken in path)
      */
     WL("static MapLocation " + offset.toVariableName("loc_") + ";");
-    WL("static int " + offset.toVariableName("pathLength_") + " = 1147483647;");
-    WL("static int " + offset.toVariableName("cost_") + " = 10000;");
+    WL("static int " + offset.toVariableName("pathLength_") + " = "+ initPathLength+ ";");
+    WL("static int " + offset.toVariableName("cost_") + " = "+ initCost+ ";");
     WL("static Direction " + offset.toVariableName("bestDir_") + ";");
 
     WL();
@@ -147,7 +151,8 @@ function generateBMF(range) {
       offset.y - initalisedLocation.y
     );
     WL(locVar + " = " + initdVar + ".add(" + dir + ");");
-    // WL(offset.toVariableName("pathLength_") + " = Integer.MAX_VALUE;");
+    WL(offset.toVariableName("pathLength_") + " = "+ initPathLength + ";");
+    WL(offset.toVariableName("cost_") + " = "+ initCost + ";");
     // WL(offset.toVariableName("bestDir_") + " = null;");
   });
   WL();
@@ -459,7 +464,7 @@ function genGetBestDirection(offsets) {
     WL("}");
   });
   decreaseIndentation();
-  WL("}");
+  WL("}", "");
 
   WL(
     "// If this is reached, goal was somehow not in range",
