@@ -19,7 +19,7 @@ function WL(...toWrite) {
   let indendation = "";
 
   if (indendationlevel > 0) {
-    indendation = "&nbsp;".repeat(spacesPerIndentation * indendationlevel);
+    indendation = " ".repeat(spacesPerIndentation * indendationlevel);
   }
 
   if (toWrite.length == 0) {
